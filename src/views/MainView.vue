@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-4 m-4 items-center">
+  <div class="md:flex gap-4 m-4 items-center">
     <v-btn 
       height="60"
       width="60"
@@ -23,7 +23,12 @@
           <v-text-field v-model="quizTitle" variant="outlined" label="Название квиза:"></v-text-field>
           <v-text-field v-model="quizSubtitle" variant="outlined" label="Описание квиза:"></v-text-field>
           <v-text-field v-model="quizText" variant="outlined" label="Текс:"></v-text-field>
-          
+          <p class="mb-4">Цвет:</p>
+          <v-color-picker
+            hide-inputs
+            v-model="color"
+            >
+          </v-color-picker>
         </template>
         <template v-slot:actions>
           <v-btn
@@ -40,13 +45,28 @@
         </template>
       </v-card>
     </v-dialog>
-    <v-card elevation="8" title="Привет, тут ты можешь добавить свои квизы" color="grey" prepend-icon="mdi-information"></v-card>
+    <v-card class="my-4 md:my-0" elevation="8" title="Привет!" text="Тут ты можешь добавить свои квизы" color="grey" prepend-icon="mdi-information"></v-card>
   </div>
 
-  <div class="grid grid-cols-3 gap-4 m-4">
-    <v-card v-for="(quiz, index) in store.quizes" elevation="20" :title="quiz.title" :subtitle="quiz.subtitle" :text="quiz.text">
+  <div class="grid gap-4 m-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    <v-card v-for="quiz in store.quizes" elevation="20" :title="quiz.title" :subtitle="quiz.subtitle" :text="quiz.text" :color="quiz.color">
       <v-card-actions>
-        <v-btn @click="openQuiz(index)">Открыть</v-btn>
+        <v-btn
+          @click="openQuiz(quiz.id)"
+        >Пройти!</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn 
+          @click="openQuiz(quiz.id)"
+          color="medium-emphasis"
+          icon="mdi-pencil"
+          size="small"
+        ></v-btn>
+        <v-btn
+          color="medium-emphasis"
+          icon="mdi-delete"
+          size="small"
+          @click="deleteQuiz(quiz.id)"
+        ></v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -62,7 +82,7 @@
     >
       <template v-slot:text>
         <v-card 
-          v-for="quiz_data in quiz_datas.value[currentIndex]" 
+          v-for="quiz_data in quiz_datas[currentIndex]" 
           prepend-icon="mdi-lightbulb-question-outline" 
           :title="quiz_data.question" 
           :text="quiz_data.answer"
@@ -90,7 +110,6 @@
 </template>
 
 <script setup>
-
 import { useQuizesStore } from "../stores/quizes.js";
 import { ref } from "vue";
 
@@ -102,30 +121,46 @@ let quizTitle = ref('')
 let quizSubtitle = ref('')
 let quizText = ref('')
 let currentIndex = ref()
+let color = ref("#00FFAA")
 
 store.quizes = []
 store.quiz_datas = []
 store.iter = 0
 
 function addQuiz() {
+  addingQuiz.value = false
+
   store.quizes.push(
     {"id": store.iter,
     "title": quizTitle.value,
     "subtitle": quizSubtitle.value,
-    "text": quizText.value}
+    "text": quizText.value,
+    "color": color.value}
   )
-  store.quiz_datas.push([])
+  store.quiz_datas.push(ref([]))
   quizText.value = ""
   quizSubtitle.value = ""
   quizTitle.value = ""
-  iter++;
+  store.iter++;
   
 }
-
 function openQuiz(id) {
+  alert("Opening " + id)
+}
+
+function editQuiz(id) {
   currentIndex.value = id
   edditingQuiz.value = true
   
+}
+
+function deleteQuiz(idr) {
+  store.quizes = store.quizes.filter(function(obj) {
+    return obj.id !== idr;
+  });
+  store.quiz_datas = store.quiz_datas.filter(function(obj) {
+    return obj.id !== idr;
+  });
 }
 
 </script>
