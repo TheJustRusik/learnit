@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/MainView.vue'
+import { useQuizesStore } from '@/stores/quizes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +19,9 @@ const router = createRouter({
       component: () => import('../views/QuizView.vue')
     }
   ]
+})
+router.beforeEach((to) => {
+  const store = useQuizesStore()
 })
 
 export default router

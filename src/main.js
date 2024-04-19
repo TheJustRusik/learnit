@@ -13,6 +13,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
 import { createPinia } from 'pinia'
+import { useQuizesStore } from './stores/quizes'
 
 const pinia = createPinia()
 
@@ -26,5 +27,7 @@ const app = createApp(App)
 app.use(router)
 app.use(vuetify)
 app.use(pinia)
+
+const store = useQuizesStore()
 
 app.mount('#app')

@@ -56,7 +56,7 @@
         >Пройти!</v-btn>
         <v-spacer></v-spacer>
         <v-btn 
-          @click="openQuiz(quiz.id)"
+          @click="editQuiz(quiz.id)"
           color="medium-emphasis"
           icon="mdi-pencil"
           size="small"
@@ -73,23 +73,44 @@
 
   <v-dialog
       v-model="edditingQuiz"
-      width="auto"
+      width="800"
     >
     <v-card
-      max-width="400"
       prepend-icon="mdi-newspaper-variant"
       title="Добавление вопросов квиза!"
     >
-      <template v-slot:text>
-        <v-card 
-          v-for="quiz_data in quiz_datas[currentIndex]" 
-          prepend-icon="mdi-lightbulb-question-outline" 
-          :title="quiz_data.question" 
-          :text="quiz_data.answer"
-        />
-        <v-btn>
-          Добавить
-        </v-btn>
+      <template v-slot:text >
+        <div class="grid grid-cols-1 sm:grid-cols-2">
+
+          
+          <div v-for="(question_and_anws, index) in current_quiz_data" class="grow bg-red-100 p-1 rounded-lg m-1">
+            <div class="flex items-center">
+              <div class="grow">
+                <v-text-field variant="outlined" label="Вопрос:" v-model="question_and_anws.question"></v-text-field>
+                <v-text-field variant="outlined" label="Ответ:" density="compact" v-model="question_and_anws.answer"></v-text-field>
+            
+              </div>
+              <v-btn
+                icon="mdi-delete"
+                color="red"
+                class="m-1"
+                size="small"
+                @click="current_quiz_data.splice(index, 1)"
+              ></v-btn>
+            </div>
+            
+          </div>
+        </div>
+        <div class="flex gap-3 items-center justify-center">
+          <h3>Создать новый вопрос</h3>
+          <v-btn
+            icon="mdi-plus"
+            color="black"
+            class="mt-1"
+            @click="current_quiz_data.push({'question': '', 'answer': ''});"
+          ></v-btn>
+        </div>
+        
       </template>
       <template v-slot:actions>
         <v-btn
@@ -110,6 +131,7 @@
 </template>
 
 <script setup>
+import { useRouter } from "vue-router";
 import { useQuizesStore } from "../stores/quizes.js";
 import { ref } from "vue";
 
@@ -120,12 +142,17 @@ let edditingQuiz = ref(false)
 let quizTitle = ref('')
 let quizSubtitle = ref('')
 let quizText = ref('')
-let currentIndex = ref()
 let color = ref("#00FFAA")
+let current_quiz_data = ref()
 
-store.quizes = []
-store.quiz_datas = []
+let question = ref()
+let answer = ref()
+
+store.quizes = ref([])
+store.quiz_datas = new Map()
 store.iter = 0
+
+let router = useRouter()
 
 function addQuiz() {
   addingQuiz.value = false
@@ -137,30 +164,32 @@ function addQuiz() {
     "text": quizText.value,
     "color": color.value}
   )
-  store.quiz_datas.push(ref([]))
+  store.quiz_datas.set(store.iter, [])
   quizText.value = ""
   quizSubtitle.value = ""
   quizTitle.value = ""
   store.iter++;
   
 }
+
 function openQuiz(id) {
-  alert("Opening " + id)
+  store.current_quiz_id = id
+  router.push("/quiz")
 }
 
 function editQuiz(id) {
-  currentIndex.value = id
   edditingQuiz.value = true
+  current_quiz_data = store.quiz_datas.get(id)
   
 }
 
-function deleteQuiz(idr) {
+function deleteQuiz(id) {
+
   store.quizes = store.quizes.filter(function(obj) {
-    return obj.id !== idr;
+    return obj.id !== id;
   });
-  store.quiz_datas = store.quiz_datas.filter(function(obj) {
-    return obj.id !== idr;
-  });
+  store.quiz_datas.delete(id)
 }
+
 
 </script>

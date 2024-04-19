@@ -6,6 +6,7 @@ import { ref } from 'vue'
 // the first argument is a unique id of the store across your application
 export const useQuizesStore = defineStore('quizes',() => {
     let iter = ref(0)
-    let quizes = ref([])
-    let quiz_datas = ref([])
+    let quizes = ref()
+    let quiz_datas = ref()
+    let current_quiz_id = ref()
 })
