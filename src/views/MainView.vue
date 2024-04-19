@@ -127,13 +127,26 @@
       </template>
     </v-card>
   </v-dialog>
+  
+  <div style="position: fixed; bottom: 0; height:max-content; width: 100%; background-color:#00123e;">
     
+    <vue-sound
+  livestream
+  show-download
+  title="The Show"
+  title-link="http://www.google.com"
+  details="Lorem Ipsum Dolor Sit Amet"
+  details-link="http://www.bing.com"
+  file="https://storage.googleapis.com/polylingua-videos/inputAudio.mp3"
+  />
+  </div>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
 import { useQuizesStore } from "../stores/quizes.js";
 import { ref } from "vue";
+import VueSound from "@/components/VueSound.vue";
 
 const store = useQuizesStore()
 let addingQuiz = ref(false)
@@ -191,5 +204,8 @@ function deleteQuiz(id) {
   store.quiz_datas.delete(id)
 }
 
+function sliderChanged(sliderValue){
+  this.newvalue = sliderValue;
 
+}
 </script>

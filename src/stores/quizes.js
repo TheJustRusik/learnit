@@ -10,3 +10,4 @@ export const useQuizesStore = defineStore('quizes',() => {
     let quiz_datas = ref()
     let current_quiz_id = ref()
 })
+
