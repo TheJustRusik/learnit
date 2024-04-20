@@ -37,7 +37,7 @@
   title-link="http://www.google.com"
   details="Lorem Ipsum Dolor Sit Amet"
   details-link="http://www.bing.com"
-  file="https://storage.googleapis.com/polylingua-videos/inputAudio.mp3"
+  file="https://storage.googleapis.com/polylingua-videos/Hope-Emotional-Soundtrack(chosic.com).mp3"
   />
   </div>
 </template>
